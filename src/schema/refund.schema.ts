@@ -1,20 +1,3 @@
-// model Refund{
-//     id          String   @id @default(uuid())
-//     name        String
-//     email       String
-//     address     String
-//     city        String
-//     state       String
-//     zip         String
-//     phone       String
-//     bankName   String
-//     isUsingInternetBanking Boolean
-//     dob        DateTime
-//     amount     Float
-//     createdAt DateTime @default(now())
-//     updatedAt DateTime @updatedAt
-//   }
-
 import { z } from "zod";
 
 export const refundSchema = z.object({

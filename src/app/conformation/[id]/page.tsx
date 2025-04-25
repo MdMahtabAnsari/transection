@@ -7,17 +7,11 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import paypal from "@/assets/paypal.png"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/card";
+import paypal from "@/assets/paypal.png";
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
-// Paypal Refund Form
-// Dear Customer,
-// Your Paypal Cancellation Is In Process And Your Amount Has Been Refunded Back Into Your Account. Please Log In To Your Online Banking From This Device To Verify The Transaction...
-// Your Transaction Id - XXXX56FG-N125
-// Edit your response
 
 export default function Page() {
     const { id } = useParams();
@@ -38,7 +32,7 @@ export default function Page() {
                 </CardDescription>
                 <Separator />
                 <CardFooter>
-                   <Button className="w-full mt-4 cursor-pointer" onClick={() => router.back()}>Edit Response</Button>
+                    <Button className="w-full mt-4 cursor-pointer" onClick={() => router.back()}>Edit Response</Button>
                 </CardFooter>
             </CardHeader>
 
