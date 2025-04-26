@@ -65,25 +65,27 @@ export default function Page() {
     })
 
     useEffect(() => {
-        const fetchRefund = async () => {
-            try {
-                const response = await getRefund(id as string);
-                if (response.status === "success") {
-                    form.reset(response.data);
-                    toast.success("Refund data fetched successfully");
-                } else {
-                    toast.error("Failed to fetch refund data");
-                    router.push("/refund");
-                }
-            } catch (error) {
-                console.error(error)
-                toast.error("An error occurred while fetching refund data");
-                router.push("/refund");
-                
-            }
-        };
-        fetchRefund();
+       if(id) {
+            fetchRefund(id as string);
+        }
     }, [id, form])
+
+    const fetchRefund = async (id:string) => {
+        try {
+            const response = await getRefund(id);
+            if (response.status === "success") {
+                form.reset(response.data);
+                toast.success("Refund data fetched successfully");
+            } else {
+                toast.error("Failed to fetch refund data");
+                router.push("/refund");
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error("An error occurred while fetching refund data");
+            router.push("/refund");
+        }
+    }
 
     async function onSubmit(data: z.infer<typeof editSchema>) {
         console.log(data)

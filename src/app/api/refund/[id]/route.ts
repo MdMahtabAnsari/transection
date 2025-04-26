@@ -1,13 +1,14 @@
-import { NextRequest,NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ApiResponse } from "@/schema/apiResponse.schema";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params; // Await the promise to get the id
         const refund = await prisma.refund.findUnique({
             where: { id },
         });
+
         if (!refund) {
             const errorResponse: ApiResponse = {
                 status: "error",
@@ -16,6 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             };
             return NextResponse.json(errorResponse, { status: 404 });
         }
+
         const successResponse: ApiResponse = {
             status: "success",
             message: "Refund retrieved successfully",
@@ -32,14 +34,16 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
-    const body = await request.json();
+export async function PUT(request: NextRequest, { params }: {params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params; // Access params directly
+        const body = await request.json();
+
         const refund = await prisma.refund.update({
             where: { id },
             data: body,
         });
+
         const successResponse: ApiResponse = {
             status: "success",
             message: "Refund updated successfully",
