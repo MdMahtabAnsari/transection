@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ApiResponse } from "@/schema/apiResponse.schema";
 import { refundSchema, Refund } from "@/schema/refund.schema";
+import { sendConfirmationEmail } from "@/helpers/confirmationMail";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
         const refund = await prisma.refund.create({
             data: refundData,
         });
+        await sendConfirmationEmail(refund);
+
         const successResponse: ApiResponse = {
             status: "success",
             message: "Refund created successfully",

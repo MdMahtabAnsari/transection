@@ -14,4 +14,10 @@ export const refundSchema = z.object({
     amount: z.number().positive({ message: "Amount must be a positive number" }),
 });
 
+export const editSchema = refundSchema.extend({
+    id: z.string().uuid({ message: "Invalid ID format" }),
+});
+
+export type EditRefund = z.infer<typeof editSchema>;
+
 export type Refund = z.infer<typeof refundSchema>;

@@ -32,7 +32,7 @@ export default function Page() {
                 </CardDescription>
                 <Separator />
                 <CardFooter>
-                    <Button className="w-full mt-4 cursor-pointer" onClick={() => router.back()}>Edit Response</Button>
+                    <Button className="w-full mt-4 cursor-pointer" onClick={() => router.push(`/refund/${id}`)}>Edit Response</Button>
                 </CardFooter>
             </CardHeader>
 

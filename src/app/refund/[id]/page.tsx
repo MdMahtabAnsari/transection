@@ -24,7 +24,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import { refundSchema } from "@/schema/refund.schema";
+import { editSchema } from "@/schema/refund.schema";
 
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -32,20 +32,23 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { createRefund } from "@/api/refund.api";
+import { getRefund,updateRefund } from "@/api/refund.api";
 import { toast } from "sonner"
 import paypal from "@/assets/paypal.png";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from 'lucide-react';
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 
 
 export default function Page() {
     const router = useRouter();
+    const { id } = useParams();
 
-    const form = useForm<z.infer<typeof refundSchema>>({
-        resolver: zodResolver(refundSchema),
+    const form = useForm<z.infer<typeof editSchema>>({
+        resolver: zodResolver(editSchema),
         defaultValues: {
             name: "",
             email: "",
@@ -61,19 +64,40 @@ export default function Page() {
         },
     })
 
-    async function onSubmit(data: z.infer<typeof refundSchema>) {
+    useEffect(() => {
+        const fetchRefund = async () => {
+            try {
+                const response = await getRefund(id as string);
+                if (response.status === "success") {
+                    form.reset(response.data);
+                    toast.success("Refund data fetched successfully");
+                } else {
+                    toast.error("Failed to fetch refund data");
+                    router.push("/refund");
+                }
+            } catch (error) {
+                console.error(error)
+                toast.error("An error occurred while fetching refund data");
+                router.push("/refund");
+                
+            }
+        };
+        fetchRefund();
+    }, [id, form])
+
+    async function onSubmit(data: z.infer<typeof editSchema>) {
         console.log(data)
         try {
-            const response = await createRefund(data);
+            const response = await updateRefund(id as string, data);
             if (response.status === "success") {
-                toast.success("Refund request submitted successfully")
+                toast.success("Refund updated successfully")
                 router.push(`/confirmation/${response.data.id}`)
             } else {
-                toast.error("Failed to submit refund request")
+                toast.error("Failed to update refund")
             }
         } catch (error) {
             console.error(error)
-            toast.error("An error occurred while submitting the refund request")
+            toast.error("An error occurred while updating refund")
         }
     }
 
@@ -84,9 +108,9 @@ export default function Page() {
                     <img src={paypal.src} alt="PayPal" className="w-56 h-30" />
                 </CardContent>
                 <Separator />
-                <CardTitle className="text-center font-bold text-2xl">Refund Form</CardTitle>
+                <CardTitle className="text-center font-bold text-2xl">Edit Refund Request </CardTitle>
                 <CardDescription className="text-center text-sm text-muted-foreground">
-                    Please fill out the form below to request a refund.
+                    Please fill out the form below to edit your refund request.
                 </CardDescription>
             </CardHeader>
             <Form {...form}>
@@ -270,7 +294,7 @@ export default function Page() {
                         form.formState.isSubmitting ? (
                             <LoaderCircle className="animate-spin" size={16} />
                         ) : (
-                            "Submit Refund Request"
+                            "Submit Edit Request"
                         )
                         }</Button>
                 </form>
